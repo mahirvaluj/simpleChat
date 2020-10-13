@@ -3,7 +3,7 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
-import ocsf.server.*;
+import com.lloseng.ocsf.server.*;
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -18,10 +18,10 @@ import ocsf.server.*;
 public class EchoServer extends AbstractServer 
 {
   //Class variables *************************************************
-  
   /**
    * The default port to listen on.
    */
+
   final public static int DEFAULT_PORT = 5555;
   
   //Constructors ****************************************************
@@ -38,6 +38,15 @@ public class EchoServer extends AbstractServer
 
   
   //Instance methods ************************************************
+
+  @Override
+  protected void clientConnected(ConnectionToClient client) {
+    System.out.println("Client " + client.toString() + " has connected");
+  }
+  @Override
+  synchronized protected void clientDisconnected(ConnectionToClient client) {
+    System.out.println("Client " + client.toString() + " has connected");
+  }
   
   /**
    * This method handles any messages received from the client.
@@ -93,7 +102,7 @@ public class EchoServer extends AbstractServer
     {
       port = DEFAULT_PORT; //Set port to 5555
     }
-	
+  
     EchoServer sv = new EchoServer(port);
     
     try 

@@ -1,0 +1,228 @@
+
+ClientConsole.java,271
+public class ClientConsole 21,617
+  final public static int DEFAULT_PORT 28,787
+  ChatClient client;35,985
+  Scanner fromConsole;42,1065
+  public ClientConsole(53,1316
+  public void accept(79,1935
+  public void display(105,2436
+  public static void main(118,2728
+
+common/ChatIF.java,32
+public interface ChatIF 15,418
+
+client/ChatClient.java,211
+public class ChatClient 20,555
+  ChatIF clientUI;28,796
+  public ChatClient(41,1102
+  public void handleMessageFromServer(57,1510
+  public void handleMessageFromClientUI(67,1739
+  public void quit(84,2049
+
+com/lloseng/ocsf/client/AdaptableClient.java,316
+class AdaptableClient 21,560
+  private ObservableClient client;28,750
+  public AdaptableClient(38,989
+  final protected void connectionClosed(49,1267
+  final protected void connectionException(60,1500
+  final protected void connectionEstablished(68,1693
+  final protected void handleMessageFromServer(78,1898
+
+com/lloseng/ocsf/client/AbstractClient.java,938
+public abstract class AbstractClient 60,2369
+  private Socket clientSocket;70,2637
+  private ObjectOutputStream output;75,2731
+  private ObjectInputStream input;80,2827
+  private Thread clientReader;85,2927
+  private boolean readyToStop=92,3116
+  private String host;97,3194
+  private int port;102,3250
+  public AbstractClient(112,3466
+  final public void openConnection(127,3857
+  public void sendToServer(169,5131
+  final public void closeConnection(183,5466
+  final public boolean isConnected(195,5707
+  final public int getPort(203,5852
+  final public void setPort(215,6113
+  final public String getHost(223,6222
+  final public void setHost(235,6477
+  final public InetAddress getInetAddress(245,6645
+  final public void run(257,6980
+  protected void connectionClosed(323,8669
+  protected void connectionException(336,9242
+  protected void connectionEstablished(343,9493
+  final private void closeAll(362,10008
+
+com/lloseng/ocsf/client/ObservableClient.java,801
+public class ObservableClient 21,608
+  public static final String CONNECTION_CLOSED 28,797
+  public static final String CONNECTION_ESTABLISHED 33,941
+  private AdaptableClient service;40,1181
+  public ObservableClient(44,1288
+  final public void openConnection(54,1526
+  final public void closeConnection(62,1675
+  final public void sendToServer(73,1943
+  final public boolean isConnected(83,2181
+  final public int getPort(91,2303
+  final public void setPort(102,2543
+  final public String getHost(110,2657
+  final public void setHost(121,2891
+  final public InetAddress getInetAddress(129,3020
+  protected void handleMessageFromServer(141,3324
+  protected void connectionClosed(150,3512
+  protected void connectionException(162,3770
+  protected void connectionEstablished(171,3964
+
+com/lloseng/ocsf/client/ObservableSWRClient.java,921
+public class ObservableSWRClient 22,675
+  public static final String WAITING_FOR_REPLY 29,881
+  private ArrayList expected 34,1040
+  private boolean cancelled 35,1089
+  private int waitTime 36,1126
+  private Exception exception;37,1158
+  private Object received;38,1189
+  public ObservableSWRClient(42,1288
+  public void setWaitTime(55,1583
+  public synchronized boolean connectAndWait(70,2022
+  public synchronized Object sendAndWaitForReply(108,2970
+  public synchronized Object sendAndWaitForReply(131,3767
+  public synchronized void cancel(165,4384
+  public boolean isCancelled(176,4545
+  private void clearAll(181,4607
+  private synchronized void notify(189,4727
+  private synchronized void receive(196,4837
+  protected void handleMessageFromServer(212,5206
+  protected void connectionClosed(223,5417
+  protected void connectionException(237,5694
+  protected void connectionEstablished(248,5912
+
+com/lloseng/ocsf/server/AbstractConnectionFactory.java,56
+public abstract class AbstractConnectionFactory36,1171
+
+com/lloseng/ocsf/server/ObservableServer.java,1413
+public class ObservableServer 23,622
+  public static final String CLIENT_CONNECTED=30,823
+  public static final String CLIENT_DISCONNECTED=35,978
+  public static final String CLIENT_EXCEPTION=41,1223
+  public static final String LISTENING_EXCEPTION=47,1457
+  public static final String SERVER_CLOSED=52,1614
+  public static final String SERVER_STARTED=57,1760
+  public static final String SERVER_STOPPED=62,1908
+  private AdaptableServer service;70,2123
+  public ObservableServer(80,2324
+  final public void listen(90,2549
+  final public void stopListening(98,2698
+  final public void close(106,2839
+  public void sendToAllClients(116,3036
+  final public boolean isListening(126,3268
+  final public Thread[] getClientConnections(140,3696
+  final public int getNumberOfClients(148,3863
+  final public int getPort(156,3995
+  final public void setPort(167,4228
+  final public void setTimeout(180,4540
+  final public void setBacklog(194,4898
+  protected synchronized void clientConnected(205,5180
+  protected synchronized void clientDisconnected(217,5492
+  protected synchronized void clientException(233,5977
+  protected synchronized void listeningException(254,6541
+  synchronized protected void serverStopped(266,6855
+  synchronized protected void serverClosed(276,7080
+  protected synchronized void serverStarted(286,7326
+  protected synchronized void handleMessageFromClient303,7944
+
+com/lloseng/ocsf/server/OriginatorMessage.java,241
+public class OriginatorMessage14,408
+  private ConnectionToClient originator;19,501
+  private Object message;24,573
+  public OriginatorMessage(34,856
+  public ConnectionToClient getOriginator(47,1201
+  public Object getMessage(57,1372
+
+com/lloseng/ocsf/server/AdaptableServer.java,500
+class AdaptableServer 21,583
+  private ObservableServer server;28,775
+  public AdaptableServer(38,1014
+  final protected void clientConnected(52,1311
+  final protected void clientDisconnected(62,1546
+  final protected void clientException(74,1863
+  final protected void listeningException(86,2218
+  final protected void serverStopped(95,2418
+  final protected void serverStarted(104,2585
+  final protected void serverClosed(112,2724
+  final protected void handleMessageFromClient(124,2997
+
+com/lloseng/ocsf/server/ConnectionToClient.java,716
+public class ConnectionToClient 59,2415
+  private AbstractServer server;66,2604
+  private Socket clientSocket;73,2775
+  private ObjectInputStream input;78,2859
+  private ObjectOutputStream output;83,2946
+  private boolean readyToStop;89,3102
+  private HashMap savedInfo 98,3433
+  protected ConnectionToClient(113,3913
+  public void sendToClient(157,5157
+  final public void close(172,5545
+  final public InetAddress getInetAddress(186,5862
+  public String toString(196,6095
+  public void setInfo(210,6554
+  public Object getInfo(221,6814
+  final public void run(233,7107
+  protected boolean handleMessageFromClient(298,8871
+  final private void closeAll(311,9175
+  protected void finalize(344,9939
+
+com/lloseng/ocsf/server/ObservableOriginatorServer.java,543
+public class ObservableOriginatorServer 24,833
+  public ObservableOriginatorServer(33,1066
+  protected synchronized void handleMessageFromClient49,1578
+  protected synchronized void clientConnected(65,2111
+  synchronized protected void clientDisconnected(80,2627
+  synchronized protected void clientException(99,3252
+  protected synchronized void listeningException(119,3875
+  protected synchronized void serverStarted(134,4346
+  synchronized protected void serverStopped(147,4748
+  synchronized protected void serverClosed(160,5148
+
+com/lloseng/ocsf/server/AbstractServer.java,1417
+public abstract class AbstractServer 71,2993
+  private ServerSocket serverSocket 78,3200
+  private Thread connectionListener 83,3294
+  private int port;88,3372
+  private int timeout 97,3656
+  private int backlog 104,3828
+  private ThreadGroup clientThreadGroup;110,4000
+  private boolean readyToStop 116,4142
+  private AbstractConnectionFactory connectionFactory 123,4412
+  public AbstractServer(132,4648
+  final public void listen(160,5412
+  final public void stopListening(179,5813
+  final public void close(196,6371
+  public void sendToAllClients(246,7775
+  final public boolean isListening(268,8270
+  final public boolean isClosed(279,8540
+  synchronized final public Thread[] getClientConnections(296,9134
+  final public int getNumberOfClients(311,9496
+  final public int getPort(321,9666
+  final public void setPort(333,9910
+  final public void setTimeout(347,10312
+  final public void setBacklog(360,10665
+  final public void setConnectionFactory(375,11104
+  final public void run(386,11396
+  protected void clientConnected(459,13482
+  synchronized protected void clientDisconnected(470,13939
+  synchronized protected void clientException(486,14620
+  protected void listeningException(497,14990
+  protected void serverStarted(504,15233
+  protected void serverStopped(511,15447
+  protected void serverClosed(519,15733
+  final synchronized void receiveMessageFromClient(550,16862
+
+EchoServer.java,268
+public class EchoServer 18,539
+  final public static int DEFAULT_PORT 25,708
+  public EchoServer(34,944
+  public void handleMessageFromClient48,1281
+  protected void serverStarted(59,1609
+  protected void serverStopped(69,1869
+  public static void main(84,2303

@@ -4,7 +4,7 @@
 
 package client;
 
-import ocsf.client.*;
+import com.lloseng.ocsf.client.*;
 import common.*;
 import java.io.*;
 
@@ -57,6 +57,12 @@ public class ChatClient extends AbstractClient
   public void handleMessageFromServer(Object msg) 
   {
     clientUI.display(msg.toString());
+  }
+
+  @Override
+  protected void connectionClosed() {
+    clientUI.display("Server has closed connection, exiting");
+    quit();
   }
 
   /**
