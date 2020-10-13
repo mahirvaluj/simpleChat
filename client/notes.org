@@ -1,0 +1,5 @@
+* Bugs
+  - If I login twice to a server, it'll echo messages twice and it'll
+    do some other bad things too
+  - On server #stop, it doesn't notify the client that it's "no longer
+    accepting connections." (I'm not sure why it would do this?)
