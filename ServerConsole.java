@@ -66,18 +66,47 @@ public class ServerConsole implements ChatIF
    */
   public void accept() 
   {
-    try
-    {
-      String message;
-
+    try {
+      String msg;
       while (true) 
       {
-        message = fromConsole.nextLine();
-        server.handleMessageFromServerUI(message);
+        msg = fromConsole.nextLine();
+        if (msg.charAt(0) == '#') {
+          if (strcmp(msg, "quit", 1, 0) == 0) {
+            try {
+              server.close();
+            } catch (IOException e) { }
+            System.exit(0);
+          } else if (strcmp(msg, "stop", 1, 0) == 0) {
+            server.stopListening();
+          } else if (strcmp(msg, "close", 1, 0) == 0) {
+            try {
+              server.close();
+            } catch (IOException e) { }
+          } else if (strcmp(msg, "setport", 1, 0) == 0) {
+            if (server.isListening()) {
+              this.display("Cannot setport while running.");
+            } else {
+              try {
+                server.close();
+                server.setPort(Integer.parseInt(msg.substring(9)));
+              } catch (Exception e) { this.display("could not set port"); }
+            }
+          } else if (strcmp(msg, "start", 1, 0) == 0) {
+            try {
+              server.listen();
+            } catch (Exception e) { this.display("could not Start server"); }
+          } else if (strcmp(msg, "getport", 1, 0) == 0) {
+            this.display(String.format("port: %d", server.getPort()));
+          } else {
+            this.display("Unknown command .");
+          }
+        } else {
+          server.handleMessageFromServerUI(msg);
+        }
       }
     } 
-    catch (Exception ex) 
-    {
+    catch (Exception ex) {
       System.out.println(ex);
       System.out.println
         ("Unexpected error while reading from console!");
@@ -98,6 +127,18 @@ public class ServerConsole implements ChatIF
   
   //Class methods ***************************************************
   
+  /**
+   * This method is used earlier in the file to handle string comparisons
+   */
+  private int strcmp(String s1, String s2, int start1, int start2) {
+    for (int i = 0; i < java.lang.Math.min(s1.length() - start1, s2.length() - start2); ++i) {
+      if (s1.charAt(i + start1) != s2.charAt(i + start2)) {
+        return s1.charAt(i + start1) - s2.charAt(i + start2);
+      }
+    }
+    return 0;
+  }
+
   /**
    * This method is responsible for the creation of the Client UI.
    *

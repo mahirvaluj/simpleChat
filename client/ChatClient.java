@@ -74,68 +74,15 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String msg)
   {
-    if (msg.charAt(0) == '#') {
-      if (strcmp(msg, "quit", 1, 0) == 0) {
-        quit();
-      } else if (strcmp(msg, "logoff", 1, 0) == 0) {
-        try
-        {
-          closeConnection();
-        }
-        catch(IOException e) { }
-      } else if (strcmp(msg.toString(), "sethost", 1, 0) == 0) {
-        if (this.isConnected()) {
-          clientUI.display("cannot #sethost, client is already connected somewhere.");
-        } else {
-          String h = msg.toString().substring(11);
-          clientUI.display(h);
-          this.setHost(h);
-        }
-      } else if (strcmp(msg, "setport", 1, 0) == 0) {
-        try {
-          this.setPort(Integer.parseInt(msg.substring(11)));
-        } catch (Exception e) {
-          clientUI.display(e.toString());
-          clientUI.display("Badly formatted command! Format: #setport PORT");
-        }
-      } else if (strcmp(msg, "login", 1, 0) == 0) {
-        try {
-          if (msg.trim().length() <= 7) {
-            System.out.println("Must provide ID.");
-          } else {
-            this.id = msg.substring(7);
-            openConnection();
-            try {
-              sendToServer("#login " + id);
-            } catch(IOException e) {
-              clientUI.display
-                ("Could not send message to server.  Terminating client.");
-              quit();
-            }
-            clientUI.display("<" + id + "> has logged in.");
-          }
-        } catch (IOException e) { 
-          clientUI.display(e.toString());
-          clientUI.display("Could not log in.");
-        }
-      } else if (strcmp(msg, "gethost", 1, 0) == 0) {
-        clientUI.display(this.getHost());
-      } else if (strcmp(msg, "getport", 1, 0) == 0) {
-        clientUI.display(String.format("%d", this.getPort()));
-      } else {
-        clientUI.display("Unknown command!");
-      }
-    } else {
-      try
-      {
-        sendToServer(msg);
-      }
-      catch(IOException e)
-      {
-        clientUI.display
-          ("Could not send message to server.  Terminating client.");
-        quit();
-      }
+    try
+    {
+      sendToServer(msg);
+    }
+    catch(IOException e)
+    {
+      clientUI.display
+        ("Could not send message to server.  Terminating client.");
+      quit();
     }
   }
 

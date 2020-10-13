@@ -107,41 +107,9 @@ public class EchoServer extends AbstractServer
    */
   public void handleMessageFromServerUI(String msg)
   {
-    if (msg.charAt(0) == '#') {
-      if (strcmp(msg, "quit", 1, 0) == 0) {
-        try {
-          this.close();
-        } catch (IOException e) { }
-        System.exit(0);
-      } else if (strcmp(msg, "stop", 1, 0) == 0) {
-        this.stopListening();
-      } else if (strcmp(msg, "close", 1, 0) == 0) {
-        try {
-          this.close();
-        } catch (IOException e) { }
-      } else if (strcmp(msg, "setport", 1, 0) == 0) {
-        if (this.isListening()) {
-          serverUI.display("Cannot setport while running.");
-        } else {
-          try {
-            this.close();
-            this.setPort(Integer.parseInt(msg.substring(9)));
-          } catch (Exception e) { serverUI.display("could not set port"); }
-        }
-      } else if (strcmp(msg, "start", 1, 0) == 0) {
-        try {
-          this.listen();
-        } catch (Exception e) { serverUI.display("could not Start server"); }
-      } else if (strcmp(msg, "getport", 1, 0) == 0) {
-        serverUI.display(String.format("port: %d", this.getPort()));
-      } else {
-        serverUI.display("Unknown command .");
-      }
-    } else {
-      String s = "SERVER MSG> " + msg;
-      System.out.println(s);
-      this.sendToAllClients(s);
-    }
+    String s = "SERVER MSG> " + msg;
+    System.out.println(s);
+    this.sendToAllClients(s);
   }
     
   /**
