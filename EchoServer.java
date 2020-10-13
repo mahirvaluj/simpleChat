@@ -66,23 +66,32 @@ public class EchoServer extends AbstractServer
     (Object msg, ConnectionToClient client)
   {
     String s = (String) msg;
+    String idx = (String) client.getInfo("id");
+    if (idx != null) {
+      serverUI.display("Message recieved: '" + msg + "' + from " + idx);
+    } else {
+      serverUI.display("Message recieved: '" + msg + "' + from " + client.toString());
+    }
     if (s.charAt(0) == '#') {
       if (strcmp(s, "login", 1, 0) == 0) {
-        Boolean typed = (Boolean) client.getInfo("typed").booleanValue()
-        if ( typed != null && typed == true) {
+        Boolean typed = (Boolean) client.getInfo("typed");
+        if ( typed != null && typed.booleanValue() == true) {
           System.out.println("Attempted to login after sending messages");
-          client.close();
+          try {
+            client.close();
+          } catch (IOException e) { }
         } else {
           String id = s.substring(7);
           client.setInfo("id", id);
-          client.setInfo("logged_in", Boolean(true));
+          serverUI.display("<" + id + "> has logged in.");
+          client.setInfo("logged_in", new Boolean(true));
         }
       } else {
         System.out.println("Bad command from client");
       }
     } else {
-      client.setInfo("typed", Boolean(true));
-      System.out.println("Message received: " + s + " from " + client);
+      client.setInfo("typed", new Boolean(true));
+      // System.out.println("Message received: " + s + " from " + client);
       String clientID = (String) client.getInfo("id");
       if (clientID == null) {
         clientID = "anonymous";

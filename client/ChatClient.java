@@ -112,6 +112,7 @@ public class ChatClient extends AbstractClient
                 ("Could not send message to server.  Terminating client.");
               quit();
             }
+            clientUI.display("<" + id + "> has logged in.");
           }
         } catch (IOException e) { 
           clientUI.display(e.toString());
