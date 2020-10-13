@@ -5,6 +5,8 @@
 import java.io.*;
 import com.lloseng.ocsf.server.*;
 
+import common.*;
+
 /**
  * This class overrides some of the methods in the abstract 
  * superclass in order to give more functionality to the server.
@@ -24,6 +26,8 @@ public class EchoServer extends AbstractServer
 
   final public static int DEFAULT_PORT = 5555;
   
+  ChatIF serverUI; 
+
   //Constructors ****************************************************
   
   /**
@@ -31,9 +35,13 @@ public class EchoServer extends AbstractServer
    *
    * @param port The port number to connect on.
    */
-  public EchoServer(int port) 
-  {
+  public EchoServer(int port) {
     super(port);
+  }
+
+  public EchoServer(int port, ChatIF serverUI) {
+    super(port);
+    this.serverUI = serverUI;
   }
 
   
@@ -45,9 +53,9 @@ public class EchoServer extends AbstractServer
   }
   @Override
   synchronized protected void clientDisconnected(ConnectionToClient client) {
-    System.out.println("Client " + client.toString() + " has connected");
+    System.out.println("Client " + client.toString() + " has disconnected");
   }
-  
+
   /**
    * This method handles any messages received from the client.
    *
@@ -57,8 +65,74 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    String s = (String) msg;
+    if (s.charAt(0) == '#') {
+      if (strcmp(s, "login", 1, 0) == 0) {
+        Boolean typed = (Boolean) client.getInfo("typed").booleanValue()
+        if ( typed != null && typed == true) {
+          System.out.println("Attempted to login after sending messages");
+          client.close();
+        } else {
+          String id = s.substring(7);
+          client.setInfo("id", id);
+          client.setInfo("logged_in", Boolean(true));
+        }
+      } else {
+        System.out.println("Bad command from client");
+      }
+    } else {
+      client.setInfo("typed", Boolean(true));
+      System.out.println("Message received: " + s + " from " + client);
+      String clientID = (String) client.getInfo("id");
+      if (clientID == null) {
+        clientID = "anonymous";
+      }
+      this.sendToAllClients(clientID + ":> " + s.trim());
+    }
+  }
+
+  /**
+   * This method handles any messages received from the client.
+   *
+   * @param msg The message received from the CLI.
+   */
+  public void handleMessageFromServerUI(String msg)
+  {
+    if (msg.charAt(0) == '#') {
+      if (strcmp(msg, "quit", 1, 0) == 0) {
+        try {
+          this.close();
+        } catch (IOException e) { }
+        System.exit(0);
+      } else if (strcmp(msg, "stop", 1, 0) == 0) {
+        this.stopListening();
+      } else if (strcmp(msg, "close", 1, 0) == 0) {
+        try {
+          this.close();
+        } catch (IOException e) { }
+      } else if (strcmp(msg, "setport", 1, 0) == 0) {
+        if (this.isListening()) {
+          serverUI.display("Cannot setport while running.");
+        } else {
+          try {
+            this.close();
+            this.setPort(Integer.parseInt(msg.substring(9)));
+          } catch (Exception e) { serverUI.display("could not set port"); }
+        }
+      } else if (strcmp(msg, "start", 1, 0) == 0) {
+        try {
+          this.listen();
+        } catch (Exception e) { serverUI.display("could not Start server"); }
+      } else if (strcmp(msg, "getport", 1, 0) == 0) {
+        serverUI.display(String.format("port: %d", this.getPort()));
+      } else {
+        serverUI.display("Unknown command .");
+      }
+    } else {
+      String s = "SERVER MSG> " + msg;
+      System.out.println(s);
+      this.sendToAllClients(s);
+    }
   }
     
   /**
@@ -82,6 +156,18 @@ public class EchoServer extends AbstractServer
   }
   
   //Class methods ***************************************************
+
+  /**
+   * This method is used earlier in the file to handle string comparisons
+   */
+  private int strcmp(String s1, String s2, int start1, int start2) {
+    for (int i = 0; i < java.lang.Math.min(s1.length() - start1, s2.length() - start2); ++i) {
+      if (s1.charAt(i + start1) != s2.charAt(i + start2)) {
+        return s1.charAt(i + start1) - s2.charAt(i + start2);
+      }
+    }
+    return 0;
+  }
   
   /**
    * This method is responsible for the creation of 
